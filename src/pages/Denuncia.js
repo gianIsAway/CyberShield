@@ -6,7 +6,8 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTheme } from '../context/ThemeContext';
@@ -40,8 +41,24 @@ const Denuncia = () => {
   };
 
   const handleSubmit = () => {
+    const camposVazios = Object.entries(form).filter(([_, valor]) => valor.trim() === '');
+    if (camposVazios.length > 0) {
+      Alert.alert('Atenção', 'Por favor, preencha todas as opções antes de enviar.');
+      return;
+    }
+
     console.log('Denúncia enviada:', form);
-    // Aqui você pode integrar com backend ou alertar envio
+    Alert.alert('Sucesso', 'Sua denúncia foi enviada com sucesso.');
+
+    setForm({
+      faixaEtaria: '',
+      periodo: '',
+      tipoViolacao: '',
+      plataforma: '',
+      impacto: '',
+      foiReportada: '',
+      descricao: '',
+    });
   };
 
   const perguntas = [
@@ -79,61 +96,61 @@ const Denuncia = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-  <ScrollView
-    contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
-    showsVerticalScrollIndicator={false}
-  >
-      <Text style={[stylesBase.title, { color: colors.text }]}>Registrar Denúncia</Text>
-
-      <Image
-                source={require('../images/denuncia.png')}
-                style={stylesBase.image}
-                resizeMode="cover"
-              />
-
-      <Text style={[stylesBase.description, { color: colors.text }]}>
-        Cadastramento de Violação: Registre de forma anônima relatos sobre cyberbullying, assédio,
-        invasões de privacidade, etc. Esses dados ajudam a criar indicadores e políticas de prevenção.
-      </Text>
-
-      {perguntas.map(({ label, field, opcoes }) => (
-        <View key={field} style={[stylesBase.pickerContainer, { borderColor: colors.border }]}>
-          <Text style={[stylesBase.label, { color: colors.text }]}>{label}</Text>
-          <Picker
-            selectedValue={form[field]}
-            style={{ color: colors.text }}
-            dropdownIconColor={colors.text}
-            onValueChange={(value) => handleChange(field, value)}
-          >
-            <Picker.Item label="Selecione uma opção..." value="" />
-            {opcoes.map(opcao => (
-              <Picker.Item key={opcao} label={opcao} value={opcao} />
-            ))}
-          </Picker>
-        </View>
-      ))}
-
-      <View style={[stylesBase.textAreaContainer, { borderColor: colors.border }]}>
-        <Text style={[stylesBase.label, { color: colors.text }]}>Descreva a violação ocorrida:</Text>
-        <TextInput
-          multiline
-          numberOfLines={5}
-          style={[stylesBase.textArea, { color: colors.text }]}
-          value={form.descricao}
-          onChangeText={(text) => handleChange('descricao', text)}
-          placeholder="Digite aqui..."
-          placeholderTextColor={isDarkMode ? '#aaa' : '#888'}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={[stylesBase.button, { backgroundColor: colors.button }]}
-        onPress={handleSubmit}
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={stylesBase.buttonText}>Enviar Denúncia</Text>
-      </TouchableOpacity>
+        <Text style={[stylesBase.title, { color: colors.text }]}>Registrar Denúncia</Text>
+
+        <Image
+          source={require('../images/denuncia.png')}
+          style={stylesBase.image}
+          resizeMode="cover"
+        />
+
+        <Text style={[stylesBase.description, { color: colors.text }]}>
+          Cadastramento de Violação: Registre de forma anônima relatos sobre cyberbullying, assédio,
+          invasões de privacidade, etc. Esses dados ajudam a criar indicadores e políticas de prevenção.
+        </Text>
+
+        {perguntas.map(({ label, field, opcoes }) => (
+          <View key={field} style={[stylesBase.pickerContainer, { borderColor: colors.border }]}>
+            <Text style={[stylesBase.label, { color: colors.text }]}>{label}</Text>
+            <Picker
+              selectedValue={form[field]}
+              style={{ color: colors.text }}
+              dropdownIconColor={colors.text}
+              onValueChange={(value) => handleChange(field, value)}
+            >
+              <Picker.Item label="Selecione uma opção..." value="" />
+              {opcoes.map(opcao => (
+                <Picker.Item key={opcao} label={opcao} value={opcao} />
+              ))}
+            </Picker>
+          </View>
+        ))}
+
+        <View style={[stylesBase.textAreaContainer, { borderColor: colors.border }]}>
+          <Text style={[stylesBase.label, { color: colors.text }]}>Descreva a violação ocorrida:</Text>
+          <TextInput
+            multiline
+            numberOfLines={5}
+            style={[stylesBase.textArea, { color: colors.text }]}
+            value={form.descricao}
+            onChangeText={(text) => handleChange('descricao', text)}
+            placeholder="Digite aqui..."
+            placeholderTextColor={isDarkMode ? '#aaa' : '#888'}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={[stylesBase.button, { backgroundColor: colors.button }]}
+          onPress={handleSubmit}
+        >
+          <Text style={stylesBase.buttonText}>Enviar Denúncia</Text>
+        </TouchableOpacity>
       </ScrollView>
-</SafeAreaView>
+    </SafeAreaView>
   );
 };
 
