@@ -13,7 +13,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useTheme } from '../context/ThemeContext';
 import stylesBase from '../styles/denunciaStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { salvarDenuncia } from '../lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 
 const Denuncia = () => {
   const { theme } = useTheme();
@@ -41,116 +41,62 @@ const Denuncia = () => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleEnviarDenuncia = async () => {
-    console.log('Enviando denúncia com dados:', form);
-
-    const {
-      faixaEtaria,
-      periodo,
-      tipoViolacao,
-      plataforma,
-      impacto,
-      foiReportada,
-      descricao,
-    } = form;
-
-    if (
-      !faixaEtaria ||
-      !periodo ||
-      !tipoViolacao ||
-      !plataforma ||
-      !impacto ||
-      !foiReportada ||
-      !descricao.trim()
-    ) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+  const handleSubmit = async () => {
+    const emptyField = Object.entries(form).find(([_, value]) => value.trim() === '');
+    if (emptyField) {
+      Alert.alert('Atenção', 'Por favor, preencha todas as opções antes de enviar.');
       return;
     }
 
-    const dadosFormatados = {
-      faixa_etaria: faixaEtaria,
-      periodo,
-      tipo_violacao: tipoViolacao,
-      plataforma,
-      impacto,
-      foi_reportada: foiReportada,
-      descricao,
-    };
-
-    try {
-      const resposta = await salvarDenuncia(dadosFormatados);
-      console.log('Resposta do Supabase:', resposta);
-
-      if (resposta.error) {
-        Alert.alert('Erro', 'Falha ao enviar denúncia: ' + resposta.error.message);
-      } else {
-        Alert.alert('Sucesso', 'Denúncia enviada com sucesso!');
-        setForm({
-          faixaEtaria: '',
-          periodo: '',
-          tipoViolacao: '',
-          plataforma: '',
-          impacto: '',
-          foiReportada: '',
-          descricao: '',
-        });
-      }
-    } catch (error) {
-      console.error('Erro de rede ou Supabase:', error);
-      Alert.alert('Erro', 'Erro ao enviar denúncia. Verifique sua conexão.');
+    const { error } = await supabase.from('denuncias').insert([form]);
+    if (error) {
+      Alert.alert('Erro', 'Erro ao enviar denúncia. Tente novamente.');
+    } else {
+      Alert.alert('Sucesso', 'Denúncia enviada com sucesso!');
+      setForm({
+        faixaEtaria: '',
+        periodo: '',
+        tipoViolacao: '',
+        plataforma: '',
+        impacto: '',
+        foiReportada: '',
+        descricao: '',
+      });
     }
   };
 
   const perguntas = [
-  {
-    label: 'Selecione sua faixa etária',
-    field: 'faixaEtaria',
-    opcoes: ['Menor de 18 anos', '18-25 anos', '26-30 anos', '31-38 anos', '38-45 anos', '46-55 anos','Acima de 55 anos'],
-  },
-  {
-    label: 'Período em que ocorreu a violação',
-    field: 'periodo',
-    opcoes: ['Última semana', 'Último mês', 'Últimos 3 meses', 'Mais de 3 meses'],
-  },
-  {
-    label: 'Tipo de violação sofrida ou testemunhada',
-    field: 'tipoViolacao',
-    opcoes: [
-  'Cyberbullying',
-  'Assédio',
-  'Privacidade',
-  'Discurso de ódio',
-  'Fraude',
-  'Spam',
-  'Ameaça',
-  'Outro',
-    ],
-  },
-  {
-    label: 'Plataforma onde ocorreu',
-    field: 'plataforma',
-    opcoes: ['Instagram', 'Facebook', 'WhatsApp', 'Twitter/X', 'TikTok', 'Outra'],
-  },
-  {
-    label: 'Principal impacto sofrido',
-    field: 'impacto',
-    opcoes: [
-  'Emocional',
-  'Psicológico',
-  'Financeiro',
-  'Reputação',
-  'Social',
-  'Segurança',
-  'Outro',
-],
-  },
-  {
-    label: 'A violação foi reportada à plataforma ou autoridades?',
-    field: 'foiReportada',
-    opcoes: ['Sim', 'Não', 'Prefiro não dizer'],
-  },
-];
-
+    {
+      label: 'Selecione sua faixa etária',
+      field: 'faixaEtaria',
+      opcoes: ['Menor de 18 anos', '18-25 anos', '26-30 anos', '31-38 anos', '38-45 anos', '46-55 anos'],
+    },
+    {
+      label: 'Período em que ocorreu a violação',
+      field: 'periodo',
+      opcoes: ['Última semana', 'Último mês', 'Últimos 3 meses', 'Mais de 3 meses'],
+    },
+    {
+      label: 'Tipo de violação sofrida ou testemunhada',
+      field: 'tipoViolacao',
+      opcoes: ['Cyberbullying', 'Assédio', 'Invasão de privacidade', 'Outro'],
+    },
+    {
+      label: 'Plataforma onde ocorreu',
+      field: 'plataforma',
+      opcoes: ['Instagram', 'Facebook', 'WhatsApp', 'Twitter/X', 'TikTok', 'Outra'],
+    },
+    {
+      label: 'Principal impacto sofrido',
+      field: 'impacto',
+      opcoes: ['Emocional', 'Psicológico', 'Financeiro', 'Outro'],
+    },
+    {
+      label: 'A violação foi reportada à plataforma ou autoridades?',
+      field: 'foiReportada',
+      opcoes: ['Sim', 'Não', 'Prefiro não dizer'],
+    },
+  ];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
@@ -200,7 +146,7 @@ const Denuncia = () => {
 
         <TouchableOpacity
           style={[stylesBase.button, { backgroundColor: colors.button }]}
-          onPress={handleEnviarDenuncia}
+          onPress={handleSubmit}
         >
           <Text style={stylesBase.buttonText}>Enviar Denúncia</Text>
         </TouchableOpacity>

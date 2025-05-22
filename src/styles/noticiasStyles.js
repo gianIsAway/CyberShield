@@ -1,32 +1,44 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+const stylesBase = StyleSheet.create({
   container: {
-    flex: 1,
+    padding: 20,
   },
-  infoBox: {
-    borderWidth: 1,
-    borderRadius: 12,
+  card: {
+    marginBottom: 20,
     padding: 16,
-    margin: 16,
+    borderRadius: 12,
     elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
-  infoTitle: {
-    fontSize: 20,
+  image: {
+    width: '100%',
+    height: 180,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'Poppins_600SemiBold',
+    marginBottom: 6,
+  },
+  description: {
+    fontSize: 15,
     marginBottom: 12,
   },
-  infoText: {
-    fontSize: 16,
-    fontFamily: 'Poppins_400Regular',
-    textAlign: 'justify',
-    marginTop: 12,
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
   },
-   image: {
-  width: '100%',
-  height: 280,
-  borderRadius: 20,
-  marginVertical: 16,
-},
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
+
+export default stylesBase;

@@ -1,65 +1,45 @@
 import { StyleSheet } from 'react-native';
 
-const createDashboardStyles = (isDarkMode) => {
-  const colors = {
-    background: isDarkMode ? '#121212' : '#ffffff',
-    card: isDarkMode ? '#1e1e1e' : '#f4f4f4',
-    text: isDarkMode ? '#ffffff' : '#000000',
-    title: isDarkMode ? '#ffffff' : '#000000',
-    border: isDarkMode ? '#333' : '#ccc',
-  };
-
-  return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      padding: 20,
-      paddingBottom: 40,
-    },
-    section: {
-      backgroundColor: colors.card,
-      borderRadius: 12,
-      padding: 16,
-      marginBottom: 20,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: colors.title,
-      marginBottom: 8,
-    },
-    sectionText: {
-      fontSize: 15,
-      color: colors.text,
-      lineHeight: 22,
-    },
-    highlightBox: {
-      backgroundColor: colors.card,
-      borderRadius: 10,
-      padding: 12,
-      marginVertical: 6,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    highlightText: {
-      color: colors.text,
-      fontSize: 16,
-      fontWeight: '500',
-    },
-    chartContainer: {
-      alignItems: 'center',
-      marginTop: 16,
-    },
-    chartTitle: {
-      color: colors.text,
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginBottom: 6,
-      textAlign: 'center',
-    },
-  });
-};
-
-export default createDashboardStyles;
+export default StyleSheet.create({
+  titulo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    padding: 20,
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    borderRadius: 16,
+    padding: 16,
+    margin: 10,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  cardTitulo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  cardTexto: {
+    fontSize: 16,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  imagem: {
+    width: '100%',
+    height: 250,
+    marginBottom: 10,
+    borderRadius:20,
+  },
+  ods: {
+    width: '100%',
+    height: 400,
+    marginBottom: 10,
+    borderRadius: 12,
+    resizeMode: 'cover',
+  },
+});
