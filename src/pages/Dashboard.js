@@ -1,77 +1,101 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
-import { supabase } from '../lib/supabaseClient';
+import { buscarDenuncias } from '../lib/supabaseClient';
 
-const categorias = ['plataforma', 'tipoViolacao', 'faixaEtaria', 'impacto'];
-const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#F77825'];
+const screenWidth = Dimensions.get('window').width;
+
+const categorias = ['plataforma', 'tipo_violacao', 'faixa_etaria', 'impacto'];
+
+const cores = [
+  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+  '#8E44AD', '#2ECC71', '#E67E22', '#1ABC9C', '#F39C12', '#7F8C8D'
+];
 
 const Dashboard = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
-  const [dados, setDados] = useState({});
+  const [denuncias, setDenuncias] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const backgroundColor = isDarkMode ? '#121212' : '#f4f4f4';
+  const textColor = isDarkMode ? '#fff' : '#000';
 
   useEffect(() => {
-    fetchDados();
+    const carregar = async () => {
+      try {
+        const dados = await buscarDenuncias();
+        setDenuncias(dados);
+      } catch (e) {
+        console.error('Erro ao buscar denúncias:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    carregar();
   }, []);
 
-  const fetchDados = async () => {
-    const { data, error } = await supabase.from('denuncias').select('*');
-    if (error) return;
-
-    const resultado = {};
-    categorias.forEach((cat) => {
-      const contagem = {};
-      data.forEach((item) => {
-        const valor = item[cat];
+  const contarOpcoes = (campo) => {
+    const contagem = {};
+    denuncias.forEach((d) => {
+      const valor = d[campo];
+      if (valor) {
         contagem[valor] = (contagem[valor] || 0) + 1;
-      });
-      resultado[cat] = contagem;
+      }
     });
-
-    setDados(resultado);
-  };
-
-  const gerarChartData = (obj) => {
-    const total = Object.values(obj).reduce((sum, val) => sum + val, 0);
-    return Object.entries(obj).map(([label, valor], index) => ({
+    return Object.entries(contagem).map(([label, count], index) => ({
       name: label,
-      population: valor,
-      color: colors[index % colors.length],
-      legendFontColor: isDarkMode ? '#fff' : '#000',
-      legendFontSize: 14,
+      population: count,
+      color: cores[index % cores.length],
+      legendFontColor: textColor,
+      legendFontSize: 12,
     }));
   };
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? '#121212' : '#f4f4f4' }}>
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text style={{ color: isDarkMode ? '#fff' : '#000', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>
-          Resumo das Denúncias
-        </Text>
+  if (loading) {
+    return (
+      <View style={{ flex: 1, backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={textColor} />
+        <Text style={{ color: textColor, marginTop: 10 }}>Carregando dados...</Text>
+      </View>
+    );
+  }
 
-        {categorias.map((cat) => (
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor }} contentContainerStyle={{ padding: 20 }}>
+      <Text style={{ color: textColor, fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+        Dashboard de Denúncias
+      </Text>
+
+      {categorias.map((cat) => {
+        const dados = contarOpcoes(cat);
+        if (dados.length === 0) return null;
+
+        return (
           <View key={cat} style={{ marginBottom: 30 }}>
-            <Text style={{ color: isDarkMode ? '#fff' : '#000', fontSize: 18, marginBottom: 5 }}>
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            <Text style={{ color: textColor, fontSize: 18, marginBottom: 10 }}>
+              {cat.replace('_', ' ').toUpperCase()}
             </Text>
-            {dados[cat] && (
-              <PieChart
-                data={gerarChartData(dados[cat])}
-                width={Dimensions.get('window').width - 40}
-                height={220}
-                accessor="population"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                absolute
-              />
-            )}
+            <PieChart
+              data={dados}
+              width={screenWidth - 40}
+              height={220}
+              chartConfig={{
+                backgroundGradientFrom: backgroundColor,
+                backgroundGradientTo: backgroundColor,
+                color: () => textColor,
+                labelColor: () => textColor,
+              }}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="10"
+              absolute
+            />
           </View>
-        ))}
-      </ScrollView>
-    </SafeAreaView>
+        );
+      })}
+    </ScrollView>
   );
 };
 
