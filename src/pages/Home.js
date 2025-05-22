@@ -107,7 +107,7 @@ const Home = ({ navigation }) => {
   <TouchableOpacity
     style={[styles.feedbackButton, { backgroundColor: isDarkMode ? '#333' : '#000' }]}
     onPress={() =>
-      Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSdA6M0XROy840-jr60yjwXriUbSBp8lMNHVpWuYCxt5xCcPYQ/viewform?usp=sharing')
+      Linking.openURL('https://forms.gle/BE5Y9c5ao5MPBHF58')
     }
   >
     <Text style={styles.feedbackButtonText}>Responder formulário</Text>

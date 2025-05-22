@@ -1,102 +1,147 @@
+// src/pages/Dashboard.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Image,
+  Dimensions,
+  SafeAreaView,
+} from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { useTheme } from '../context/ThemeContext';
 import { buscarDenuncias } from '../lib/supabaseClient';
+import styles from '../styles/dashboardStyles';
 
 const screenWidth = Dimensions.get('window').width;
 
-const categorias = ['plataforma', 'tipo_violacao', 'faixa_etaria', 'impacto'];
+const cores = ['#FF6384', '#36A2EB', '#FFCE56', '#8BC34A', '#9C27B0', '#FF9800'];
 
-const cores = [
-  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
-  '#8E44AD', '#2ECC71', '#E67E22', '#1ABC9C', '#F39C12', '#7F8C8D'
+const campos = [
+  { key: 'faixa_etaria', titulo: 'Faixa Etária' },
+  { key: 'periodo', titulo: 'Período da Violação' },
+  { key: 'tipo_violacao', titulo: 'Tipo de Violação' },
+  { key: 'plataforma', titulo: 'Plataforma' },
+  { key: 'impacto', titulo: 'Impacto Causado' },
+  { key: 'foi_reportada', titulo: 'Foi Reportada?' },
 ];
 
-const Dashboard = () => {
+export default function Dashboard() {
   const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
-  const [denuncias, setDenuncias] = useState([]);
+  const isDark = theme === 'dark';
+  const [dados, setDados] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const backgroundColor = isDarkMode ? '#121212' : '#f4f4f4';
-  const textColor = isDarkMode ? '#fff' : '#000';
+  const coresTexto = {
+    fundo: isDark ? '#121212' : '#f2f2f2',
+    card: isDark ? '#1e1e1e' : '#fff',
+    texto: isDark ? '#fff' : '#000',
+    borda: isDark ? '#333' : '#ddd',
+  };
 
   useEffect(() => {
-    const carregar = async () => {
+    async function carregar() {
       try {
-        const dados = await buscarDenuncias();
-        setDenuncias(dados);
-      } catch (e) {
-        console.error('Erro ao buscar denúncias:', e);
+        const resposta = await buscarDenuncias();
+        setDados(resposta);
+      } catch (error) {
+        console.error('Erro ao buscar denúncias:', error);
       } finally {
         setLoading(false);
       }
-    };
+    }
     carregar();
   }, []);
 
-  const contarOpcoes = (campo) => {
+  const contarOcorrencias = (chave) => {
     const contagem = {};
-    denuncias.forEach((d) => {
-      const valor = d[campo];
+    dados.forEach((item) => {
+      const valor = item[chave];
       if (valor) {
         contagem[valor] = (contagem[valor] || 0) + 1;
       }
     });
-    return Object.entries(contagem).map(([label, count], index) => ({
+    const total = Object.values(contagem).reduce((a, b) => a + b, 0);
+    return Object.entries(contagem).map(([label, value], index) => ({
       name: label,
-      population: count,
+      population: value,
       color: cores[index % cores.length],
-      legendFontColor: textColor,
-      legendFontSize: 12,
+      legendFontColor: coresTexto.texto,
+      legendFontSize: 14,
+      percentage: ((value / total) * 100).toFixed(1) + '%',
     }));
   };
 
   if (loading) {
     return (
-      <View style={{ flex: 1, backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={textColor} />
-        <Text style={{ color: textColor, marginTop: 10 }}>Carregando dados...</Text>
+      <View style={[styles.loadingContainer, { backgroundColor: coresTexto.fundo }]}>
+        <ActivityIndicator size="large" color="#888" />
       </View>
     );
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor }} contentContainerStyle={{ padding: 20 }}>
-      <Text style={{ color: textColor, fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
-        Dashboard de Denúncias
-      </Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: coresTexto.fundo }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+        <Text style={[styles.titulo, { color: coresTexto.texto }]}>Resumo das Denúncias</Text>
 
-      {categorias.map((cat) => {
-        const dados = contarOpcoes(cat);
-        if (dados.length === 0) return null;
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: coresTexto.card, borderColor: coresTexto.borda },
+          ]}
+        >
+          <Image source={require('../images/noticia.png')} style={styles.imagem} resizeMode="contain" />
+          <Text style={[styles.cardTexto, { color: coresTexto.texto }]}>
+            Os dados aqui apresentados são anônimos e ajudam a compreender melhor o cenário das
+            violações digitais enfrentadas por diferentes faixas etárias e em diferentes plataformas.
+          </Text>
+        </View>
 
-        return (
-          <View key={cat} style={{ marginBottom: 30 }}>
-            <Text style={{ color: textColor, fontSize: 18, marginBottom: 10 }}>
-              {cat.replace('_', ' ').toUpperCase()}
-            </Text>
-            <PieChart
-              data={dados}
-              width={screenWidth - 40}
-              height={220}
-              chartConfig={{
-                backgroundGradientFrom: backgroundColor,
-                backgroundGradientTo: backgroundColor,
-                color: () => textColor,
-                labelColor: () => textColor,
-              }}
-              accessor="population"
-              backgroundColor="transparent"
-              paddingLeft="10"
-              absolute
-            />
-          </View>
-        );
-      })}
-    </ScrollView>
+        {campos.map(({ key, titulo }) => {
+          const dadosGrafico = contarOcorrencias(key);
+          if (dadosGrafico.length === 0) return null;
+
+          return (
+            <View
+              key={key}
+              style={[
+                styles.card,
+                { backgroundColor: coresTexto.card, borderColor: coresTexto.borda },
+              ]}
+            >
+              <Text style={[styles.cardTitulo, { color: coresTexto.texto }]}>{titulo}</Text>
+              <PieChart
+                data={dadosGrafico}
+                width={screenWidth - 40}
+                height={220}
+                chartConfig={{
+                  color: () => coresTexto.texto,
+                  labelColor: () => coresTexto.texto,
+                }}
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                absolute
+              />
+            </View>
+          );
+        })}
+
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: coresTexto.card, borderColor: coresTexto.borda },
+          ]}
+        >
+          {/* <Image source={require('../images/noticia.png')} style={styles.imagem} resizeMode="contain" /> */}
+          <Text style={[styles.cardTexto, { color: coresTexto.texto }]}>
+            Os dados aqui apresentados são anônimos e ajudam a compreender melhor o cenário das
+            violações digitais enfrentadas por diferentes faixas etárias e em diferentes plataformas.
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
-};
-
-export default Dashboard;
+}

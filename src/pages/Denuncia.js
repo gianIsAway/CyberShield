@@ -44,7 +44,6 @@ const Denuncia = () => {
   const handleEnviarDenuncia = async () => {
     console.log('Enviando denúncia com dados:', form);
 
-    // Verificar se os campos obrigatórios foram preenchidos
     const {
       faixaEtaria,
       periodo,
@@ -68,7 +67,6 @@ const Denuncia = () => {
       return;
     }
 
-    // Montar o objeto com nomes iguais ao do banco Supabase
     const dadosFormatados = {
       faixa_etaria: faixaEtaria,
       periodo,
@@ -83,12 +81,10 @@ const Denuncia = () => {
       const resposta = await salvarDenuncia(dadosFormatados);
       console.log('Resposta do Supabase:', resposta);
 
-      // Se o Supabase retornar erro, resposta pode ter chave 'error'
       if (resposta.error) {
         Alert.alert('Erro', 'Falha ao enviar denúncia: ' + resposta.error.message);
       } else {
         Alert.alert('Sucesso', 'Denúncia enviada com sucesso!');
-        // Resetar formulário
         setForm({
           faixaEtaria: '',
           periodo: '',
@@ -106,37 +102,55 @@ const Denuncia = () => {
   };
 
   const perguntas = [
-    {
-      label: 'Selecione sua faixa etária',
-      field: 'faixaEtaria',
-      opcoes: ['Menor de 18 anos', '18-25 anos', '26-30 anos', '31-38 anos', '38-45 anos', '46-55 anos'],
-    },
-    {
-      label: 'Período em que ocorreu a violação',
-      field: 'periodo',
-      opcoes: ['Última semana', 'Último mês', 'Últimos 3 meses', 'Mais de 3 meses'],
-    },
-    {
-      label: 'Tipo de violação sofrida ou testemunhada',
-      field: 'tipoViolacao',
-      opcoes: ['Cyberbullying', 'Assédio', 'Invasão de privacidade', 'Outro'],
-    },
-    {
-      label: 'Plataforma onde ocorreu',
-      field: 'plataforma',
-      opcoes: ['Instagram', 'Facebook', 'WhatsApp', 'Twitter/X', 'TikTok', 'Outra'],
-    },
-    {
-      label: 'Principal impacto sofrido',
-      field: 'impacto',
-      opcoes: ['Emocional', 'Psicológico', 'Financeiro', 'Outro'],
-    },
-    {
-      label: 'A violação foi reportada à plataforma ou autoridades?',
-      field: 'foiReportada',
-      opcoes: ['Sim', 'Não', 'Prefiro não dizer'],
-    },
-  ];
+  {
+    label: 'Selecione sua faixa etária',
+    field: 'faixaEtaria',
+    opcoes: ['Menor de 18 anos', '18-25 anos', '26-30 anos', '31-38 anos', '38-45 anos', '46-55 anos','Acima de 55 anos'],
+  },
+  {
+    label: 'Período em que ocorreu a violação',
+    field: 'periodo',
+    opcoes: ['Última semana', 'Último mês', 'Últimos 3 meses', 'Mais de 3 meses'],
+  },
+  {
+    label: 'Tipo de violação sofrida ou testemunhada',
+    field: 'tipoViolacao',
+    opcoes: [
+  'Cyberbullying',
+  'Assédio',
+  'Privacidade',
+  'Discurso de ódio',
+  'Fraude',
+  'Spam',
+  'Ameaça',
+  'Outro',
+    ],
+  },
+  {
+    label: 'Plataforma onde ocorreu',
+    field: 'plataforma',
+    opcoes: ['Instagram', 'Facebook', 'WhatsApp', 'Twitter/X', 'TikTok', 'Outra'],
+  },
+  {
+    label: 'Principal impacto sofrido',
+    field: 'impacto',
+    opcoes: [
+  'Emocional',
+  'Psicológico',
+  'Financeiro',
+  'Reputação',
+  'Social',
+  'Segurança',
+  'Outro',
+],
+  },
+  {
+    label: 'A violação foi reportada à plataforma ou autoridades?',
+    field: 'foiReportada',
+    opcoes: ['Sim', 'Não', 'Prefiro não dizer'],
+  },
+];
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
