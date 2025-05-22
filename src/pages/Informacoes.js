@@ -1,7 +1,11 @@
 import React from 'react';
 import { SafeAreaView, ScrollView, View, Text, Image } from 'react-native';
 import styles from '../styles/informacoesStyles';
-import { ShieldCheck, AlertTriangle, Users, Lock, EyeOff, Megaphone, Eye, MessageCircle } from 'lucide-react-native';
+import {
+  ShieldCheck, AlertTriangle, Users, Lock,
+  EyeOff, Megaphone, Eye, MessageCircle,
+  UserX, FileWarning
+} from 'lucide-react-native';
 import { useTheme } from '../context/ThemeContext';
 
 const informacoesList = [
@@ -10,28 +14,28 @@ const informacoesList = [
     icon: <ShieldCheck size={24} color="#4A90E2" />,
     title: 'Direitos Digitais Básicos',
     description:
-      'Seus direitos digitais garantem a proteção da sua privacidade, liberdade de expressão e segurança online. Isso inclui o direito ao consentimento sobre dados pessoais, acesso à informação e a proteção contra abusos e crimes digitais.',
+      'Seus direitos digitais incluem privacidade, liberdade de expressão e acesso à informação. Você tem direito a controlar seus dados pessoais, exigir segurança em plataformas online, ser informado sobre o uso de seus dados, e contestar conteúdos falsos ou prejudiciais.',
   },
   {
     key: 'denuncia',
     icon: <AlertTriangle size={24} color="#F5A623" />,
     title: 'Como Denunciar Violações',
     description:
-      'É fundamental saber como identificar e denunciar violações digitais. Você pode registrar denúncias em plataformas oficiais, órgãos de proteção ao consumidor, autoridades policiais e entidades de direitos humanos para garantir que os responsáveis sejam responsabilizados.',
+      'Você pode denunciar crimes digitais em sites como SaferNet, delegacias especializadas em crimes cibernéticos (DEIC), ou diretamente em plataformas como Instagram e Facebook. Reúna provas (prints, links) e faça o registro formalmente.',
   },
   {
     key: 'apoio',
     icon: <Users size={24} color="#7ED321" />,
     title: 'Apoio Jurídico e Psicológico',
     description:
-      'Além do aspecto legal, muitas vítimas de ataques digitais precisam de suporte psicológico para lidar com os impactos emocionais. Organizações especializadas oferecem assistência jurídica gratuita e atendimento psicológico para ajudar na recuperação.',
+      'Organizações como SaferNet e Defensorias Públicas oferecem orientação jurídica gratuita. Centros de atendimento psicológico em universidades e ONGs especializadas também prestam suporte emocional às vítimas.',
   },
 ];
 
 const tiposViolacaoIntro = {
   title: 'Tipos de Violação Digital',
   description:
-    'Existem várias formas de ataques digitais que podem comprometer sua segurança e bem-estar. Conhecer cada tipo ajuda a prevenir, identificar e agir corretamente diante dessas situações.',
+    'Ataques digitais são diversos. Entender cada tipo ajuda a se proteger, identificar sinais de perigo e saber onde buscar ajuda.',
 };
 
 const tiposViolacaoList = [
@@ -40,35 +44,49 @@ const tiposViolacaoList = [
     icon: <MessageCircle size={24} color="#E94E77" />,
     title: 'Cyberbullying',
     description:
-      'Ataques repetidos e intencionais por meio da internet para humilhar, intimidar ou prejudicar alguém, causando sofrimento emocional e psicológico.',
+      'Agressões verbais, humilhações e intimidações online repetidas, muitas vezes anônimas, geralmente contra jovens ou minorias.',
+  },
+  {
+    key: 'assedio',
+    icon: <UserX size={24} color="#C0392B" />,
+    title: 'Assédio Digital',
+    description:
+      'Contato insistente, envio de mensagens indesejadas com teor sexual ou ofensivo, perseguição ou ameaças por canais digitais.',
+  },
+  {
+    key: 'fraude',
+    icon: <FileWarning size={24} color="#D35400" />,
+    title: 'Fraude Online',
+    description:
+      'Enganos com intuito de obter vantagens, como phishing, falsos sorteios, clonagem de cartões ou perfis falsos.',
   },
   {
     key: 'ataques_hacker',
     icon: <Lock size={24} color="#FF6F61" />,
     title: 'Ataques Hacker',
     description:
-      'Tentativas de invasão ou comprometimento de sistemas, redes ou dispositivos para roubo de informações, dano ou controle não autorizado.',
+      'Invasão de sistemas para roubo de dados, controle de contas ou sabotagem de informações pessoais ou corporativas.',
   },
   {
     key: 'exposicao_privada',
     icon: <EyeOff size={24} color="#9B59B6" />,
     title: 'Exposição de Dados Privados',
     description:
-      'Divulgação não autorizada de informações pessoais, fotos ou vídeos íntimos que violam a privacidade da vítima.',
+      'Vazamento ou compartilhamento não autorizado de fotos íntimas, informações pessoais ou bancárias.',
   },
   {
     key: 'discurso_odio',
     icon: <Megaphone size={24} color="#E67E22" />,
     title: 'Discurso de Ódio',
     description:
-      'Mensagens ofensivas que promovem preconceito, discriminação ou violência contra grupos ou indivíduos por raça, gênero, religião ou orientação.',
+      'Publicações que atacam grupos por raça, gênero, religião ou sexualidade, incitando violência ou preconceito.',
   },
   {
     key: 'espionagem',
     icon: <Eye size={24} color="#3498DB" />,
     title: 'Espionagem Digital',
     description:
-      'Monitoramento ou interceptação secreta de comunicações e dados pessoais para obtenção de informações sem consentimento.',
+      'Monitoramento de atividades online sem consentimento, como instalação de spyware ou keyloggers.',
   },
 ];
 
@@ -79,63 +97,60 @@ const Informacoes = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#121212' : '#f4f4f4' }}>
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-        
-        {/* Caixa introdutória com imagem */}
+
+        {/* Introdução da página */}
         <View style={isDark ? styles.boxDark : styles.box}>
           <Text style={isDark ? styles.titleDark : styles.title}>Informações Sobre Direitos e Segurança Digital</Text>
-          <Text style={isDark ? styles.descriptionDark : styles.description}>
-            Esta página oferece um guia completo e acessível sobre seus direitos digitais básicos, como denunciar violações online e onde encontrar apoio jurídico e psicológico.
-          </Text>
           <Image
-            source={require('../images/noticia.png')}
+            source={require('../images/seguranca.png')}
             style={styles.image}
           />
+          <Text style={isDark ? styles.descriptionDark : styles.description}>
+            Descubra seus direitos na era digital, como denunciar crimes virtuais, identificar tipos de ataques e acessar apoio especializado. Informação é sua melhor proteção.
+          </Text>
         </View>
 
-        {/* Caixas com direitos, denúncia e apoio */}
+        {/* Sessões de Direitos, Denúncia e Apoio */}
         {informacoesList.map(({ key, icon, title, description }) => (
-          <View
-            key={key}
-            style={[isDark ? styles.boxDark : styles.box]}
-          >
+          <View key={key} style={isDark ? styles.boxDark : styles.box}>
             <View style={styles.listItem}>
               <View style={styles.listIcon}>{icon}</View>
               <View style={styles.listTextContainer}>
                 <Text style={isDark ? styles.listTitleDark : styles.listTitle}>{title}</Text>
-                <Text style={isDark ? styles.listDescriptionDark : styles.listDescription}>
-                  {description}
-                </Text>
+                <Text style={isDark ? styles.listDescriptionDark : styles.listDescription}>{description}</Text>
               </View>
             </View>
           </View>
         ))}
 
-        {/* Caixa introdutória aos tipos de violação */}
+        {/* Introdução aos tipos de violação */}
         <View style={isDark ? styles.boxDark : styles.box}>
           <Text style={isDark ? styles.titleDark : styles.title}>{tiposViolacaoIntro.title}</Text>
           <Text style={isDark ? styles.descriptionDark : styles.description}>{tiposViolacaoIntro.description}</Text>
         </View>
 
-        {/* Caixas para cada tipo de violação */}
+        {/* Lista de tipos de violação */}
         {tiposViolacaoList.map(({ key, icon, title, description }) => (
           <View key={key} style={isDark ? styles.boxDark : styles.box}>
             <View style={styles.listItem}>
               <View style={styles.listIcon}>{icon}</View>
               <View style={styles.listTextContainer}>
                 <Text style={isDark ? styles.listTitleDark : styles.listTitle}>{title}</Text>
-                <Text style={isDark ? styles.listDescriptionDark : styles.listDescription}>
-                  {description}
-                </Text>
+                <Text style={isDark ? styles.listDescriptionDark : styles.listDescription}>{description}</Text>
               </View>
             </View>
           </View>
         ))}
 
-        {/* Caixa final sobre ODS 16 */}
+        {/* ODS 16 */}
         <View style={isDark ? styles.boxDark : styles.box}>
           <Text style={isDark ? styles.titleDark : styles.title}>ODS 16: Paz, Justiça e Instituições Fortes</Text>
+          <Image
+            source={require('../images/ods2.jpg')}
+            style={styles.ods}
+          />
           <Text style={isDark ? styles.descriptionDark : styles.description}>
-            A ODS 16 busca promover sociedades pacíficas e inclusivas, com acesso à justiça para todos e instituições eficazes e transparentes, essenciais para garantir a proteção dos direitos digitais.
+            A ODS 16, parte da Agenda 2030 da ONU, promove sociedades mais inclusivas, com justiça acessível e instituições eficazes. Ela destaca a importância da transparência, acesso à informação, combate à corrupção e proteção de direitos fundamentais — incluindo os digitais. Isso fortalece a democracia e a segurança online, garantindo um ambiente mais seguro para todos.
           </Text>
         </View>
 

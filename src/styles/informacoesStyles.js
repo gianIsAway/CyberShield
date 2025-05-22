@@ -48,8 +48,17 @@ const styles = StyleSheet.create({
 
   image: {
     width: '100%',
-    height: 180,
+    height: 220,
     marginTop: 12,
+    marginBottom: 12,
+    borderRadius: 12,
+    resizeMode: 'cover',
+  },
+
+  ods: {
+    width: '100%',
+    height: 300,
+    marginBottom: 15,
     borderRadius: 12,
     resizeMode: 'cover',
   },
