@@ -75,9 +75,11 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: coresTexto.fundo }]}>
-        <ActivityIndicator size="large" color="#888" />
-      </View>
+      <SafeAreaView style={{ flex: 1, backgroundColor: coresTexto.fundo }}>
+        <View style={[styles.loadingContainer, { backgroundColor: coresTexto.fundo }]}>
+          <ActivityIndicator size="large" color="#888" />
+        </View>
+      </SafeAreaView>
     );
   }
 
@@ -129,16 +131,32 @@ export default function Dashboard() {
           );
         })}
 
+        {/* Nova caixa explicativa */}
         <View
           style={[
             styles.card,
             { backgroundColor: coresTexto.card, borderColor: coresTexto.borda },
           ]}
         >
-          {/* <Image source={require('../images/noticia.png')} style={styles.imagem} resizeMode="contain" /> */}
+          <Text style={[styles.cardTitulo, { color: coresTexto.texto }]}>
+            Proposta do Aplicativo e Impacto Social
+          </Text>
           <Text style={[styles.cardTexto, { color: coresTexto.texto }]}>
-            Os dados aqui apresentados são anônimos e ajudam a compreender melhor o cenário das
-            violações digitais enfrentadas por diferentes faixas etárias e em diferentes plataformas.
+            A proposta do CyberShield e do questionário anônimo é ajudar na identificação e prevenção
+            de violações de direitos humanos no ambiente digital, promovendo conscientização,
+            mapeamento e resposta mais eficaz às ameaças.
+            {'\n\n'}
+
+            <Image
+            source={require('../images/ods.png')}
+            style={styles.ods}
+          />
+
+            {'\n\n'}
+            Ao reunir dados reais de vítimas, o aplicativo se conecta à Agenda 2030 da ONU e, em
+            especial, à ODS 16: Paz, Justiça e Instituições Eficazes. As informações coletadas
+            fortalecem a atuação de escolas, ONGs, delegacias especializadas e da sociedade civil
+            como um todo, contribuindo para ambientes digitais mais seguros, inclusivos e justos.
           </Text>
         </View>
       </ScrollView>

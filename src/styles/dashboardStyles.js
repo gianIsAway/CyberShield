@@ -31,8 +31,15 @@ export default StyleSheet.create({
   },
   imagem: {
     width: '100%',
-    height: 200,
+    height: 250,
     marginBottom: 10,
     borderRadius:20,
+  },
+  ods: {
+    width: '100%',
+    height: 400,
+    marginBottom: 10,
+    borderRadius: 12,
+    resizeMode: 'cover',
   },
 });
