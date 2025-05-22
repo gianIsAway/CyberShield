@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "../images/icon.png",
+      "image": "./images/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
