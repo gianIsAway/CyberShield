@@ -92,7 +92,7 @@ export default function Dashboard() {
             { backgroundColor: coresTexto.card, borderColor: coresTexto.borda },
           ]}
         >
-          <Image source={require('../images/noticia.png')} style={styles.imagem} resizeMode="contain" />
+          <Image source={require('../images/dashboard.png')} style={styles.imagem} resizeMode="contain" />
           <Text style={[styles.cardTexto, { color: coresTexto.texto }]}>
             Os dados aqui apresentados são anônimos e ajudam a compreender melhor o cenário das
             violações digitais enfrentadas por diferentes faixas etárias e em diferentes plataformas.
