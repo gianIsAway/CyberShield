@@ -4,7 +4,7 @@ Um trabalho feito para matéria de Direitos Humanos e o Universo Digital da Univ
 
 ## Download 
 
-Só clicar aqui em [download](https://expo.dev/accounts/gisnt_her/projects/CyberShield/builds/38204d22-b5e3-455d-889c-a6321311cc83) para baixar.
+Só clicar aqui em [download](https://drive.google.com/file/d/1jtMUSrOVOxA9kEvZ6U5NbtduQo38gY_d/view?usp=sharing) para baixar.
 
 ## Tecnologias usadas
 
